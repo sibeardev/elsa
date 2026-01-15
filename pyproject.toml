@@ -1,0 +1,58 @@
+[project]
+name = "elsa"
+version = "0.1.0"
+description = "MVP: Reference Book"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.128.0",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "uvicorn>=0.40.0",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 90
+indent-width = 4
+src = ["src"]
+
+[tool.ruff.lint]
+preview = true
+select = [
+    "UP",
+    "I",
+    "E",
+    "W",
+    "F",
+    "B",
+    "C4",
+    "S",
+    "BLE",
+    "T20",
+    "T10",
+    "PT",
+    "RUF",
+    "DTZ",
+    "ERA",
+    "FURB",
+]
+ignore = [
+    "C408",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "S110",
+    "BLE001",
+]
+exclude = [
+    "backend/**/tests/**",
+]
+fixable = ["I"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.flake8-bandit]
+check-typed-exception = true
