@@ -8,14 +8,14 @@ class PostgresSettings(BaseModel):
     USER: str
     PASSWORD: str
     DB: str
-    HOST: str = "db"
+    HOST: str = "localhost"
     PORT: int = 5432
     URL: str | None = None
 
     @model_validator(mode="after")
     def assemble_url(cls, model):
         if not model.URL:
-            model.URL = f"postgresql://{model.USER}:{model.PASSWORD}@{model.HOST}:{model.PORT}/{model.DB}"
+            model.URL = f"postgresql+asyncpg://{model.USER}:{model.PASSWORD}@{model.HOST}:{model.PORT}/{model.DB}"
         return model
 
 
