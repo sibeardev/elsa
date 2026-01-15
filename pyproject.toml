@@ -19,7 +19,7 @@ dependencies = [
 target-version = "py314"
 line-length = 90
 indent-width = 4
-src = ["src", "alembic"]
+src = ["src", "alembic", "scripts"]
 
 [tool.ruff.lint]
 preview = true

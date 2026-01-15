@@ -1,0 +1,35 @@
+{
+  "buildings": [
+    {"id": 1, "address": "г. Москва, ул. Ленина 1, офис 3", "latitude": 55.751244, "longitude": 37.618423},
+    {"id": 2, "address": "г. Санкт-Петербург, Невский проспект 10", "latitude": 59.934280, "longitude": 30.335099},
+    {"id": 3, "address": "Московская область, Люберцы, Новорязанское шоссе, вл11", "latitude": 55.66619160950166, "longitude": 37.90123796020507}
+  ],
+  "organizations": [
+    {"id": 1, "name": "ООО 'Рога и Копыта'", "building_id": 1},
+    {"id": 2, "name": "ЗАО 'Молочная ферма'", "building_id": 2},
+    {"id": 3, "name": "АвтоГАЗ", "building_id": 3}
+  ],
+  "phones": [
+    {"id": 1, "number": "2-222-222", "organization_id": 1},
+    {"id": 2, "number": "3-333-333", "organization_id": 1},
+    {"id": 3, "number": "8-923-666-13-13", "organization_id": 2},
+    {"id": 4, "number": "4-444-444", "organization_id": 3}
+  ],
+  "activities": [
+    {"id": 1, "name": "Еда", "parent_id": null},
+    {"id": 2, "name": "Мясная продукция", "parent_id": 1},
+    {"id": 3, "name": "Молочная продукция", "parent_id": 1},
+    {"id": 4, "name": "Автомобили", "parent_id": null},
+    {"id": 5, "name": "Грузовые", "parent_id": 4},
+    {"id": 6, "name": "Легковые", "parent_id": 4},
+    {"id": 7, "name": "Запчасти", "parent_id": 6},
+    {"id": 8, "name": "Аксессуары", "parent_id": 6}
+  ],
+  "organization_activity": [
+    {"organization_id": 1, "activity_id": 2},
+    {"organization_id": 1, "activity_id": 3},
+    {"organization_id": 2, "activity_id": 3},
+    {"organization_id": 3, "activity_id": 5},
+    {"organization_id": 3, "activity_id": 7}
+  ]
+}
