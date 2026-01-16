@@ -1,4 +1,13 @@
-from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Index, String, Table
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    Float,
+    ForeignKey,
+    Index,
+    String,
+    Table,
+    select,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -58,6 +67,15 @@ class Activity(Base):
                 raise ValueError("Max activity level is 3")
 
         return cls(id=id, name=name, parent_id=parent_id, level=level)
+
+    @classmethod
+    async def get_activity_subtree(cls, session: AsyncSession, root_id: int) -> list[int]:
+        cte = select(cls.id).where(cls.id == root_id).cte(recursive=True)
+        child_activities = select(cls.id).where(cls.parent_id == cte.c.id)
+        cte = cte.union_all(child_activities)
+        result = await session.execute(select(cte.c.id))
+
+        return [row[0] for row in result.all()]
 
 
 class Organization(Base):

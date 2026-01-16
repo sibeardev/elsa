@@ -63,6 +63,31 @@ async def get_by_activity_organizations(
 
 
 @router.get(
+    "/by-activity-tree/{activity_id}",
+    response_model=list[OrganizationOut],
+    dependencies=[Depends(api_key_guard)],
+)
+async def organizations_by_activity_tree(
+    activity_id: int,
+    session: AsyncSession = depends_session,
+):
+    activity_ids = await Activity.get_activity_subtree(session, activity_id)
+    stmt = (
+        select(Organization)
+        .where(Organization.activities.any(Activity.id.in_(activity_ids)))
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
+        )
+        .distinct()
+    )
+    organizations = (await session.scalars(stmt)).all()
+
+    return organizations
+
+
+@router.get(
     "/search",
     response_model=list[OrganizationOut],
     dependencies=[Depends(api_key_guard)],
