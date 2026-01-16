@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,6 +11,32 @@ from schemas import OrganizationOut
 
 router = APIRouter(prefix="/api/organizations", tags=["organizations"])
 depends_session = Depends(get_session)
+
+
+@router.get(
+    "/search",
+    response_model=list[OrganizationOut],
+    dependencies=[Depends(api_key_guard)],
+)
+async def search_organizations(
+    name: str = Query(..., min_length=2),
+    limit: int = Query(20, ge=1, le=100),
+    session: AsyncSession = depends_session,
+):
+    stmt = (
+        select(Organization)
+        .where(Organization.name.ilike(f"%{name}%"))
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
+        )
+        .limit(limit)
+    )
+
+    organizations = (await session.scalars(stmt)).all()
+
+    return organizations
 
 
 @router.get(
