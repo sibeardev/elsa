@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from core.database import get_session
 from core.security import api_key_guard
-from models import Organization
+from models import Activity, Organization
 from schemas import OrganizationOut
 
 router = APIRouter(prefix="/api/organizations", tags=["organizations"])
@@ -32,6 +32,31 @@ async def get_by_building_organizations(
         )
     )
 
+    organizations = (await session.scalars(stmt)).all()
+
+    return organizations
+
+
+@router.get(
+    "/by-activity/{activity_id}",
+    response_model=list[OrganizationOut],
+    dependencies=[Depends(api_key_guard)],
+)
+async def get_by_activity_organizations(
+    activity_id: int,
+    session: AsyncSession = depends_session,
+):
+    stmt = (
+        select(Organization)
+        .join(Organization.activities)
+        .where(Activity.id == activity_id)
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
+        )
+        .distinct()
+    )
     organizations = (await session.scalars(stmt)).all()
 
     return organizations
