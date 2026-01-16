@@ -2,18 +2,27 @@
   "buildings": [
     {"id": 1, "address": "г. Москва, ул. Ленина 1, офис 3", "latitude": 55.751244, "longitude": 37.618423},
     {"id": 2, "address": "г. Санкт-Петербург, Невский проспект 10", "latitude": 59.934280, "longitude": 30.335099},
-    {"id": 3, "address": "Московская область, Люберцы, Новорязанское шоссе, вл11", "latitude": 55.66619160950166, "longitude": 37.90123796020507}
+    {"id": 3, "address": "г. Новосибирск, Красный проспект 50", "latitude": 55.008353, "longitude": 82.935733},
+    {"id": 4, "address": "г. Казань, ул. Баумана 5", "latitude": 55.796127, "longitude": 49.106414}
   ],
   "organizations": [
     {"id": 1, "name": "ООО 'Рога и Копыта'", "building_id": 1},
     {"id": 2, "name": "ЗАО 'Молочная ферма'", "building_id": 2},
-    {"id": 3, "name": "АвтоГАЗ", "building_id": 3}
+    {"id": 3, "name": "АвтоГАЗ", "building_id": 3},
+    {"id": 4, "name": "ООО 'Сырная лавка'", "building_id": 1},
+    {"id": 5, "name": "ИП 'Фруктовый мир'", "building_id": 4},
+    {"id": 6, "name": "ООО 'АвтоПрофи'", "building_id": 3},
+    {"id": 7, "name": "Магнит", "building_id": 4}
   ],
   "phones": [
     {"id": 1, "number": "2-222-222", "organization_id": 1},
     {"id": 2, "number": "3-333-333", "organization_id": 1},
     {"id": 3, "number": "8-923-666-13-13", "organization_id": 2},
-    {"id": 4, "number": "4-444-444", "organization_id": 3}
+    {"id": 4, "number": "4-444-444", "organization_id": 3},
+    {"id": 5, "number": "5-555-555", "organization_id": 4},
+    {"id": 6, "number": "6-666-666", "organization_id": 5},
+    {"id": 7, "number": "7-777-777", "organization_id": 6},
+    {"id": 8, "number": "8-888-888", "organization_id": 7}
   ],
   "activities": [
     {"id": 1, "name": "Еда", "parent_id": null},
@@ -30,6 +39,11 @@
     {"organization_id": 1, "activity_id": 3},
     {"organization_id": 2, "activity_id": 3},
     {"organization_id": 3, "activity_id": 5},
-    {"organization_id": 3, "activity_id": 7}
+    {"organization_id": 3, "activity_id": 7},
+    {"organization_id": 4, "activity_id": 3},
+    {"organization_id": 5, "activity_id": 1},
+    {"organization_id": 6, "activity_id": 6},
+    {"organization_id": 6, "activity_id": 8},
+    {"organization_id": 7, "activity_id": 1}
   ]
 }
