@@ -1,0 +1,47 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
+from core.database import get_session
+from core.security import api_key_guard
+from models import Organization
+from schemas import OrganizationOut
+
+router = APIRouter(prefix="/api/organizations", tags=["organizations"])
+depends_session = Depends(get_session)
+
+
+@router.get(
+    "/{organization_id}",
+    response_model=OrganizationOut,
+    dependencies=[Depends(api_key_guard)],
+)
+async def get_organization(
+    organization_id: int,
+    session: AsyncSession = depends_session,
+):
+    try:
+        stmt = (
+            select(Organization)
+            .where(Organization.id == organization_id)
+            .options(
+                selectinload(Organization.building),
+                selectinload(Organization.phones),
+                selectinload(Organization.activities),
+            )
+        )
+
+        result = await session.execute(stmt)
+        organization = result.scalar_one_or_none()
+    except SQLAlchemyError as err:
+        raise HTTPException(status_code=500, detail="Database error") from err
+
+    if organization is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found",
+        )
+
+    return organization
