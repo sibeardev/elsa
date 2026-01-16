@@ -1,4 +1,5 @@
 from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Index, String, Table
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -31,12 +32,32 @@ class Activity(Base):
         ForeignKey("activities.id", ondelete="SET NULL"),
         nullable=True,
     )
+    level: Mapped[int] = mapped_column(nullable=False)
     parent: Mapped[Activity | None] = relationship(remote_side=[id], backref="children")
     organizations: Mapped[list[Organization]] = relationship(
         secondary=organization_activity,
         back_populates="activities",
     )
-    __table_args__ = (Index("ix_activities_parent_id", "parent_id"),)
+    __table_args__ = (
+        Index("ix_activities_parent_id", "parent_id"),
+        CheckConstraint("level BETWEEN 1 AND 3", name="ck_activity_level"),
+    )
+
+    @classmethod
+    async def create(
+        cls, session: AsyncSession, id: int, name: str, parent_id: int | None = None
+    ) -> Activity:
+        if parent_id is None:
+            level = 1
+        else:
+            parent = await session.get(cls, parent_id)
+            if not parent:
+                raise ValueError(f"Parent activity {parent_id} not found")
+            level = parent.level + 1
+            if level > 3:
+                raise ValueError("Max activity level is 3")
+
+        return cls(id=id, name=name, parent_id=parent_id, level=level)
 
 
 class Organization(Base):

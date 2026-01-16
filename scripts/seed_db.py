@@ -32,8 +32,8 @@ async def seed():
             session.add(Phone(**phone))
 
         # Activities
-        for active in data["activities"]:
-            session.add(Activity(**active))
+        for activity in data["activities"]:
+            session.add(await Activity.create(session, **activity))
 
         await session.commit()
 
