@@ -10,7 +10,7 @@
     {"id": 2, "name": "ЗАО 'Молочная ферма'", "building_id": 2},
     {"id": 3, "name": "АвтоГАЗ", "building_id": 3},
     {"id": 4, "name": "ООО 'Сырная лавка'", "building_id": 1},
-    {"id": 5, "name": "ИП 'Фруктовый мир'", "building_id": 4},
+    {"id": 5, "name": "ИП 'Мясной мир'", "building_id": 4},
     {"id": 6, "name": "ООО 'АвтоПрофи'", "building_id": 3},
     {"id": 7, "name": "Магнит", "building_id": 4}
   ],
@@ -27,6 +27,10 @@
   "activities": [
     {"id": 1, "name": "Еда", "parent_id": null},
     {"id": 2, "name": "Мясная продукция", "parent_id": 1},
+    {"id": 9, "name": "Говядина", "parent_id": 2},
+    {"id": 10, "name": "Свинина", "parent_id": 2},
+    {"id": 11, "name": "Шея", "parent_id": 10},
+    {"id": 12, "name": "Фарш", "parent_id": 11},
     {"id": 3, "name": "Молочная продукция", "parent_id": 1},
     {"id": 4, "name": "Автомобили", "parent_id": null},
     {"id": 5, "name": "Грузовые", "parent_id": 4},
@@ -41,7 +45,7 @@
     {"organization_id": 3, "activity_id": 5},
     {"organization_id": 3, "activity_id": 7},
     {"organization_id": 4, "activity_id": 3},
-    {"organization_id": 5, "activity_id": 1},
+    {"organization_id": 5, "activity_id": 10},
     {"organization_id": 6, "activity_id": 6},
     {"organization_id": 6, "activity_id": 8},
     {"organization_id": 7, "activity_id": 1}
