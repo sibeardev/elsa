@@ -8,7 +8,7 @@ class PostgresSettings(BaseModel):
     USER: str
     PASSWORD: str
     DB: str
-    HOST: str = "localhost"
+    HOST: str
     PORT: int = 5432
     URL: str | None = None
 
@@ -22,6 +22,7 @@ class PostgresSettings(BaseModel):
 class EnvSettings(BaseSettings):
     POSTGRES: PostgresSettings
     DEBUG: bool = True
+    API_KEY: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
