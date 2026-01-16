@@ -33,8 +33,7 @@ async def get_organization(
             )
         )
 
-        result = await session.execute(stmt)
-        organization = result.scalar_one_or_none()
+        organization = (await session.scalars(stmt)).one_or_none()
     except SQLAlchemyError as err:
         raise HTTPException(status_code=500, detail="Database error") from err
 
