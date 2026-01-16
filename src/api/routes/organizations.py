@@ -14,6 +14,30 @@ depends_session = Depends(get_session)
 
 
 @router.get(
+    "/by-building/{building_id}",
+    response_model=list[OrganizationOut],
+    dependencies=[Depends(api_key_guard)],
+)
+async def get_by_building_organizations(
+    building_id: int,
+    session: AsyncSession = depends_session,
+):
+    stmt = (
+        select(Organization)
+        .where(Organization.building_id == building_id)
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
+        )
+    )
+
+    organizations = (await session.scalars(stmt)).all()
+
+    return organizations
+
+
+@router.get(
     "/search",
     response_model=list[OrganizationOut],
     dependencies=[Depends(api_key_guard)],
