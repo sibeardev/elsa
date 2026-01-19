@@ -1,3 +1,5 @@
+from math import cos, degrees, radians
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,8 +8,10 @@ from sqlalchemy.orm import selectinload
 
 from core.database import get_session
 from core.security import api_key_guard
-from models import Activity, Organization
+from models import Activity, Building, Organization
 from schemas import OrganizationOut
+
+EARTH_RADIUS = 6371.0
 
 router = APIRouter(prefix="/api/organizations", tags=["organizations"])
 depends_session = Depends(get_session)
@@ -106,6 +110,40 @@ async def search_organizations(
             selectinload(Organization.activities),
         )
         .limit(limit)
+    )
+
+    organizations = (await session.scalars(stmt)).all()
+
+    return organizations
+
+
+@router.get(
+    "/in-radius",
+    response_model=list[OrganizationOut],
+    dependencies=[Depends(api_key_guard)],
+)
+async def get_organizations_in_radius(
+    lat: float,
+    lon: float,
+    radius: float,
+    session: AsyncSession = depends_session,
+):
+    lat_delta = degrees(radius / EARTH_RADIUS)
+    lon_delta = degrees(radius / (EARTH_RADIUS * cos(radians(lat))))
+
+    stmt = (
+        select(Organization)
+        .join(Building, Organization.building_id == Building.id)
+        .where(
+            Building.latitude.between(lat - lat_delta, lat + lat_delta),
+            Building.longitude.between(lon - lon_delta, lon + lon_delta),
+        )
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
+        )
+        .distinct()
     )
 
     organizations = (await session.scalars(stmt)).all()
