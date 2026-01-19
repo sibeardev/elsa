@@ -29,7 +29,6 @@ cd elsa
 POSTGRES__USER={user}
 POSTGRES__PASSWORD={yourpassword}
 POSTGRES__DB={catalog_db}
-POSTGRES__HOST=db
 API_KEY={staticApiKey}
 ```
 

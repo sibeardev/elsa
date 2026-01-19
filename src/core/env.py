@@ -8,7 +8,7 @@ class PostgresSettings(BaseModel):
     USER: str
     PASSWORD: str
     DB: str
-    HOST: str
+    HOST: str = "db"
     PORT: int = 5432
     URL: str | None = None
 
