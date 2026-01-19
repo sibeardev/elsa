@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.database import get_session
-from core.security import api_key_guard
+from core.security import verify_api_key
 from models import Activity, Building, Organization
 from schemas import OrganizationOut
 
@@ -20,7 +20,7 @@ depends_session = Depends(get_session)
 @router.get(
     "/by-building/{building_id}",
     response_model=list[OrganizationOut],
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def get_by_building_organizations(
     building_id: int,
@@ -44,7 +44,7 @@ async def get_by_building_organizations(
 @router.get(
     "/by-activity/{activity_id}",
     response_model=list[OrganizationOut],
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def get_by_activity_organizations(
     activity_id: int,
@@ -69,7 +69,7 @@ async def get_by_activity_organizations(
 @router.get(
     "/by-activity-tree/{activity_id}",
     response_model=list[OrganizationOut],
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def organizations_by_activity_tree(
     activity_id: int,
@@ -94,7 +94,7 @@ async def organizations_by_activity_tree(
 @router.get(
     "/search",
     response_model=list[OrganizationOut],
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def search_organizations(
     name: str = Query(..., min_length=2),
@@ -120,7 +120,7 @@ async def search_organizations(
 @router.get(
     "/in-radius",
     response_model=list[OrganizationOut],
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def get_organizations_in_radius(
     lat: float,
@@ -154,7 +154,7 @@ async def get_organizations_in_radius(
 @router.get(
     "/{organization_id}",
     response_model=OrganizationOut,
-    dependencies=[Depends(api_key_guard)],
+    dependencies=[Depends(verify_api_key)],
 )
 async def get_organization(
     organization_id: int,
