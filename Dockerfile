@@ -1,7 +1,9 @@
 FROM python:3.14-slim
-WORKDIR /src
+WORKDIR /opt
 RUN pip install uv
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock alembic.ini ./
 RUN uv sync --no-dev
-COPY src/ ./
+COPY src/ src/
+COPY scripts/ scripts/
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/opt/src
