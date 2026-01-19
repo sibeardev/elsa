@@ -21,10 +21,11 @@ depends_session = Depends(get_session)
     "/by-building/{building_id}",
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
+    summary="Поиск организаций в здании",
+    description="Возвращает организации, находящиеся в указанном зданиии",
 )
-async def get_by_building_organizations(
-    building_id: int,
-    session: AsyncSession = depends_session,
+async def organizations_by_building(
+    building_id: int, session: AsyncSession = depends_session
 ):
     stmt = (
         select(Organization)
@@ -45,10 +46,11 @@ async def get_by_building_organizations(
     "/by-activity/{activity_id}",
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
+    summary="Поиск организаций по виду деятельности",
+    description="Возвращает организации, относящиеся к указанному виду деятельности",
 )
-async def get_by_activity_organizations(
-    activity_id: int,
-    session: AsyncSession = depends_session,
+async def organizations_by_activity(
+    activity_id: int, session: AsyncSession = depends_session
 ):
     stmt = (
         select(Organization)
@@ -70,10 +72,14 @@ async def get_by_activity_organizations(
     "/by-activity-tree/{activity_id}",
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
+    summary="Поиск организаций по виду деятельности (с дочерними видами)",
+    description=(
+        "Возвращает организации, относящиеся к указанному виду деятельности "
+        "и всем его дочерним видам (глубина до 3 уровней)."
+    ),
 )
 async def organizations_by_activity_tree(
-    activity_id: int,
-    session: AsyncSession = depends_session,
+    activity_id: int, session: AsyncSession = depends_session
 ):
     activity_ids = await Activity.get_activity_subtree(session, activity_id)
     stmt = (
@@ -95,10 +101,21 @@ async def organizations_by_activity_tree(
     "/search",
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
+    summary="Поиск организаций по названию",
+    description="Поиск организаций по части названия. Регистр не учитывается.",
 )
 async def search_organizations(
-    name: str = Query(..., min_length=2),
-    limit: int = Query(20, ge=1, le=100),
+    name: str = Query(
+        ...,
+        min_length=2,
+        description="Название организации",
+    ),
+    limit: int = Query(
+        20,
+        ge=1,
+        le=100,
+        description="Ограничение количества результатов",
+    ),
     session: AsyncSession = depends_session,
 ):
     stmt = (
@@ -121,11 +138,16 @@ async def search_organizations(
     "/in-radius",
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
+    summary="Поиск организаций в радиусе от точки",
+    description=(
+        "Возвращает список организаций, "
+        "расположенных в зданиях в заданном радиусе от точки."
+    ),
 )
 async def get_organizations_in_radius(
-    lat: float,
-    lon: float,
-    radius: float,
+    lat: float = Query(..., description="Широта"),
+    lon: float = Query(..., description="Долгота"),
+    radius: float = Query(..., gt=0, description="Радиус в километрах"),
     session: AsyncSession = depends_session,
 ):
     lat_delta = degrees(radius / EARTH_RADIUS)
@@ -155,8 +177,10 @@ async def get_organizations_in_radius(
     "/{organization_id}",
     response_model=OrganizationOut,
     dependencies=[Depends(verify_api_key)],
+    summary="Получить организацию по идентификатору",
+    description="Возвращает информацию об организации (деятельность, здание и телефоны)",
 )
-async def get_organization(
+async def get_organization_by_id(
     organization_id: int,
     session: AsyncSession = depends_session,
 ):
