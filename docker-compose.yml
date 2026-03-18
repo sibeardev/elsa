@@ -8,6 +8,7 @@ services:
     volumes:
       - ./alembic:/opt/alembic
       - ./data:/opt/data
+      - ./logs:/opt/logs
     ports:
       - '8000:8000'
     depends_on:

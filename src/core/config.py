@@ -2,6 +2,7 @@ from .env import EnvSettings
 
 settings = EnvSettings()
 
+LOG_PATH = "/opt/logs/error.log"
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -18,7 +19,7 @@ LOGGING_CONFIG = {
         "logfile": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
-            "filename": "error.log",
+            "filename": LOG_PATH,
             "formatter": "default",
             "backupCount": 2,
         },
