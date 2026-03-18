@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,7 +22,7 @@ class PostgresSettings(BaseModel):
 class EnvSettings(BaseSettings):
     POSTGRES: PostgresSettings
     DEBUG: bool = True
-    API_KEY: str | None = None
+    API_KEY: SecretStr
 
     model_config = SettingsConfigDict(
         env_file=".env",
