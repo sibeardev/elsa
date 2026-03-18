@@ -1,7 +1,5 @@
-from math import cos, degrees, radians
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -9,8 +7,6 @@ from core.database import get_session
 from core.security import verify_api_key
 from models import Activity, Building, Organization
 from schemas import OrganizationOut
-
-EARTH_RADIUS = 6371.0
 
 router = APIRouter(prefix="/organizations", tags=["organizations"])
 depends_session = Depends(get_session)
@@ -149,15 +145,15 @@ async def get_organizations_in_radius(
     radius: float = Query(..., gt=0, description="Радиус в километрах"),
     session: AsyncSession = depends_session,
 ):
-    lat_delta = degrees(radius / EARTH_RADIUS)
-    lon_delta = degrees(radius / (EARTH_RADIUS * cos(radians(lat))))
-
     stmt = (
         select(Organization)
         .join(Building, Organization.building_id == Building.id)
         .where(
-            Building.latitude.between(lat - lat_delta, lat + lat_delta),
-            Building.longitude.between(lon - lon_delta, lon + lon_delta),
+            func.ST_DWithin(
+                Building.geom,
+                func.geography(func.ST_MakePoint(lon, lat)),
+                radius * 1000.0,
+            )
         )
         .options(
             selectinload(Organization.building),
