@@ -1,7 +1,7 @@
 """init schema
 
 Revision ID: 8d0a0d35d01b
-Revises: 
+Revises:
 Create Date: 2026-01-15 17:07:59.839125
 
 """
@@ -25,7 +25,9 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('parent_id', sa.Integer(), nullable=True),
+    sa.Column('level', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['parent_id'], ['activities.id'], ondelete='SET NULL'),
+    sa.CheckConstraint('level BETWEEN 1 AND 3', name='ck_activity_level'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_activities_parent_id', 'activities', ['parent_id'], unique=False)
