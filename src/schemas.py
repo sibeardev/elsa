@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BuildingOut(BaseModel):
@@ -7,32 +7,18 @@ class BuildingOut(BaseModel):
     latitude: float
     longitude: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PhoneOut(BaseModel):
     id: int
     number: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ActivityOut(BaseModel):
     id: int
     name: str
 
-    class Config:
-        from_attributes = True
-
-
-class OrganizationOut(BaseModel):
-    id: int
-    name: str
-    building: BuildingOut
-    phones: list[PhoneOut]
-    activities: list[ActivityOut]
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
