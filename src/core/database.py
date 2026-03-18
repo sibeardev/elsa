@@ -11,5 +11,5 @@ async def get_session() -> AsyncGenerator[AsyncSession]:
         yield session
 
 
-engine = create_async_engine(settings.POSTGRES.URL, echo=True)
+engine = create_async_engine(settings.POSTGRES.URL, echo=settings.DEBUG)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
