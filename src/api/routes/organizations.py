@@ -22,7 +22,7 @@ depends_session = Depends(get_session)
     response_model=list[OrganizationOut],
     dependencies=[Depends(verify_api_key)],
     summary="Поиск организаций в здании",
-    description="Возвращает организации, находящиеся в указанном зданиии",
+    description="Возвращает организации, находящиеся в указанном здании",
 )
 async def organizations_by_building(
     building_id: int, session: AsyncSession = depends_session
