@@ -1,3 +1,4 @@
+from geoalchemy2 import Geography
 from sqlalchemy import (
     CheckConstraint,
     Column,
@@ -111,6 +112,7 @@ class Building(Base):
     address: Mapped[str] = mapped_column(String(255), nullable=False)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    geom: Mapped[object] = mapped_column(Geography(geometry_type="POINT", srid=4326))
     organizations: Mapped[list[Organization]] = relationship(back_populates="building")
 
     __table_args__ = (
