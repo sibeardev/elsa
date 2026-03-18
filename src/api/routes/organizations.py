@@ -2,7 +2,6 @@ from math import cos, degrees, radians
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -184,20 +183,17 @@ async def get_organization_by_id(
     organization_id: int,
     session: AsyncSession = depends_session,
 ):
-    try:
-        stmt = (
-            select(Organization)
-            .where(Organization.id == organization_id)
-            .options(
-                selectinload(Organization.building),
-                selectinload(Organization.phones),
-                selectinload(Organization.activities),
-            )
+    stmt = (
+        select(Organization)
+        .where(Organization.id == organization_id)
+        .options(
+            selectinload(Organization.building),
+            selectinload(Organization.phones),
+            selectinload(Organization.activities),
         )
+    )
 
-        organization = (await session.scalars(stmt)).one_or_none()
-    except SQLAlchemyError as err:
-        raise HTTPException(status_code=500, detail="Database error") from err
+    organization = (await session.scalars(stmt)).one_or_none()
 
     if organization is None:
         raise HTTPException(
