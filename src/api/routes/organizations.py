@@ -13,7 +13,7 @@ from schemas import OrganizationOut
 
 EARTH_RADIUS = 6371.0
 
-router = APIRouter(prefix="/api/organizations", tags=["organizations"])
+router = APIRouter(prefix="/organizations", tags=["organizations"])
 depends_session = Depends(get_session)
 
 
