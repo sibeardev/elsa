@@ -6,7 +6,6 @@ services:
     env_file:
       - .env
     volumes:
-      - ./alembic:/opt/alembic
       - ./data:/opt/data
       - ./logs:/opt/logs
     ports:
