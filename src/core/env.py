@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from pydantic import BaseModel, SecretStr, model_validator
+from pydantic import BaseModel, PostgresDsn, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,13 +10,16 @@ class PostgresSettings(BaseModel):
     DB: str
     HOST: str = "db"
     PORT: int = 5432
-    URL: str | None = None
+    URL: PostgresDsn | None = None
 
     @model_validator(mode="after")
-    def assemble_url(cls, model):
-        if not model.URL:
-            model.URL = f"postgresql+asyncpg://{model.USER}:{model.PASSWORD}@{model.HOST}:{model.PORT}/{model.DB}"
-        return model
+    def assemble_url(self):
+        if not self.URL:
+            self.URL = (
+                f"postgresql+asyncpg://{self.USER}:{self.PASSWORD}"
+                f"@{self.HOST}:{self.PORT}/{self.DB}"
+            )
+        return self
 
 
 class EnvSettings(BaseSettings):
