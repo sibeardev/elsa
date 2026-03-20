@@ -65,7 +65,7 @@ async def test_organizations_by_activity(auth_headers, integration_app):
 
 @pytest.mark.asyncio
 async def test_organizations_by_activity_tree(auth_headers, integration_app):
-    activity_id = 7  # \"Еда\"
+    activity_id = 7  # \"Запчасти\"
     transport = httpx.ASGITransport(app=integration_app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get(
@@ -75,9 +75,27 @@ async def test_organizations_by_activity_tree(auth_headers, integration_app):
     organizations = response.json()
     assert isinstance(organizations, list)
 
+    assert {organization["id"] for organization in organizations} == {3}
+
     for organization in organizations:
         activity_ids = {activity["id"] for activity in organization["activities"]}
         assert activity_id in activity_ids
+
+
+@pytest.mark.asyncio
+async def test_organizations_by_activity_tree_root_returns_correct_orgs(
+    auth_headers, integration_app
+):
+    activity_id = 1  # \"Еда\"
+    transport = httpx.ASGITransport(app=integration_app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get(
+            f"/api/organizations/by-activity-tree/{activity_id}", headers=auth_headers
+        )
+    assert response.status_code == 200
+    organizations = response.json()
+    assert isinstance(organizations, list)
+    assert {organization["id"] for organization in organizations} == {1, 2, 4, 5, 7}
 
 
 @pytest.mark.asyncio
