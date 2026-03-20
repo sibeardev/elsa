@@ -140,9 +140,11 @@ async def search_organizations(
     ),
 )
 async def get_organizations_in_radius(
-    lat: float = Query(..., description="Широта"),
-    lon: float = Query(..., description="Долгота"),
-    radius: float = Query(..., gt=0, description="Радиус в километрах"),
+    lat: float = Query(..., ge=-90, le=90, description="Широта"),
+    lon: float = Query(..., ge=-180, le=180, description="Долгота"),
+    radius: float = Query(
+        ..., gt=0, le=1000, description="Радиус в километрах, не более 1000 км"
+    ),
     session: AsyncSession = depends_session,
 ):
     stmt = (
