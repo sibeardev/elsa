@@ -64,3 +64,7 @@ indent-style = "space"
 
 [tool.ruff.lint.flake8-bandit]
 check-typed-exception = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+"alembic/versions/*.py" = ["UP035", "UP007", "I001", "E501"]
