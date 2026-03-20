@@ -1,13 +1,16 @@
-import os
+from pathlib import Path
 
 from .env import EnvSettings
 
 settings = EnvSettings()
 
+# BASE
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # LOGGING
-LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
-LOG_FILE = "api.log"
-LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+LOG_PATH = LOG_DIR / "api.log"
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
