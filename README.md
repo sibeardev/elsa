@@ -59,6 +59,20 @@ docker compose exec api uv run python -m scripts.seed_db
 
 Источник данных: `data/test_data.json`
 
+## Тесты
+
+Запуск (без интеграционных тестов по умолчанию):
+
+```bash
+uv run pytest
+```
+
+Запуск интеграционных тестов (нужна запущенная БД из `docker-compose.yml`):
+
+```bash
+docker compose exec -e RUN_INTEGRATION_TESTS=1 api uv run pytest
+```
+
 ### 6. Остановить приложение и БД
 
 Ctrl+C или
