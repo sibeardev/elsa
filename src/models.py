@@ -7,6 +7,7 @@ from sqlalchemy import (
     Index,
     String,
     Table,
+    literal,
     select,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -71,10 +72,22 @@ class Activity(Base):
 
     @classmethod
     async def get_activity_subtree(cls, session: AsyncSession, root_id: int) -> list[int]:
-        cte = select(cls.id).where(cls.id == root_id).cte(recursive=True)
-        child_activities = select(cls.id).where(cls.parent_id == cte.c.id)
+        # Рекурсивный CTE с depth-счётчиком, чтобы гарантировать ограничение до 3 уровней
+        # (иначе при некорректных/циклических данных запрос может разрастаться).
+        cte = (
+            select(cls.id.label("id"), literal(1).label("depth"))
+            .where(cls.id == root_id)
+            .cte(recursive=True)
+        )
+
+        child_activities = (
+            select(cls.id.label("id"), (cte.c.depth + 1).label("depth"))
+            .where(cls.parent_id == cte.c.id)
+            .where(cte.c.depth < 3)
+        )
+
         cte = cte.union_all(child_activities)
-        result = await session.execute(select(cte.c.id))
+        result = await session.execute(select(cte.c.id).distinct())
 
         return [row[0] for row in result.all()]
 
