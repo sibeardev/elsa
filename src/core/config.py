@@ -1,8 +1,13 @@
+import os
+
 from .env import EnvSettings
 
 settings = EnvSettings()
 
-LOG_PATH = "/opt/logs/error.log"
+# LOGGING
+LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
+LOG_FILE = "api.log"
+LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
